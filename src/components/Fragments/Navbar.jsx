@@ -6,6 +6,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const themes = [
     { name: "theme-green", bgcolor: "bg-[#299D91]", color: "#299D91" },
     { name: "theme-blue", bgcolor: "bg-[#1E90FF]", color: "#1E90FF" },
@@ -60,6 +61,11 @@ const [theme, setTheme] = useState(themes[0]);
       label: "Settings",
     },
   ];
+
+  const handleLogout = () => {
+    navigate("/main");
+   
+  };
 
   return (
     <div className={`bg-defaultBlack ${theme.name}`}>
