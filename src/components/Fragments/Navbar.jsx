@@ -3,13 +3,19 @@ import { Icon } from "../Elements/Icon";
 import Logo from "../Elements/Logo";
 import Main_Menu from "../../pages/main_menu";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const Navbar = () => {
-  const navigate = useNavigate();
+  const themes = [
+    { name: "theme-green", bgcolor: "bg-[#299D91]", color: "#299D91" },
+    { name: "theme-blue", bgcolor: "bg-[#1E90FF]", color: "#1E90FF" },
+    { name: "theme-purple", bgcolor: "bg-[#6A5ACD]", color: "#6A5ACD" },
+    { name: "theme-pink", bgcolor: "bg-[#DB7093]", color: "#DB7093" },
+    { name: "theme-brown", bgcolor: "bg-[#8B4513]", color: "#8B4513" },
+  ];
+  
+const [theme, setTheme] = useState(themes[0]);
 
-  const handleLogout = () => {
-    navigate ("/main");
-  };
   const menus = [
     {
       id: "overview",
@@ -56,11 +62,11 @@ const Navbar = () => {
   ];
 
   return (
-    <div className="bg-defaultBlack">
+    <div className={`bg-defaultBlack ${theme.name}`}>
       <nav className="sticky top-0 text-special-bg2 sm:w-72 w-28 min-h-screen px-7 py-12 flex flex-col justify-between">
         <div>
           <NavLink to="/" className="flex justify-center mb-10">
-            <Logo variant="text-white text-sm sm:text-2xl" />
+            <Logo variant="text-primary text-sm sm:text-2xl" />
           </NavLink>
           {menus.map((menu) => (
             <NavLink
@@ -77,6 +83,16 @@ const Navbar = () => {
             </NavLink>
           ))}
         </div>
+        <div className="md:flex md:gap-2">
+  Themes
+  {themes.map((t) => (
+    <div
+      key={t.name}
+      className={`${t.bgcolor} md:w-6 h-6 rounded-md cursor-pointer mb-2`}
+      onClick={() => setTheme(t)}
+    ></div>
+  ))}
+</div>
         <div>
         <button
             onClick={handleLogout}
