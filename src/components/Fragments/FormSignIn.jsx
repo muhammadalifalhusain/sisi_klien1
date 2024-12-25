@@ -2,16 +2,47 @@ import Button from "../Elements/Button";
 import CheckBox from "../Elements/CheckBox";
 import LabeledInput from "../Elements/LabeledInput";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import { useState } from "react";
+import CustomizedSnackbars from "../Elements/SnackBar";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 const FormSignIn = () => {
+  const [msg, setMsg] = useState("");
+  const [open, setOpen] = useState(true);
+
+  const navigate = useNavigate();
   const { register, handleSubmit, formState: {errors, isValid}, } = useForm({
     mode: "onChange",
   });
 
-  const onFormSubmit = (data) => {
-    console.log(data);
-  };
+  
   const onErrors = (errors) => console.error(errors);
+
+  const onFormSubmit = async (data) =>{
+    try{
+      const response = await axios.post(
+        "https://jwt-auth-eight-neon.vercel.app/login",
+        {
+          email : data.email,
+          password: data.password,
+        }
+      );
+      const decoded = jwtDecode(response.data.refreshToken);
+    
+      setOpen(true);
+      setMsg({severity: "success", desc: "Login Success"});
+
+      localStorage.setItem("refreshToken", response.data.refreshToken);
+      navigate("/");
+    }catch(error){
+      if(error.response){
+        setOpen(true);
+        setMsg({severity: "error", desc: error.response.data.msg});
+      }
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit(onFormSubmit, onErrors)}>
@@ -65,6 +96,14 @@ const FormSignIn = () => {
         >
           Login
       </Button>
+      {msg && (
+        <CustomizedSnackbars
+        severity= {msg.severity}
+        message= {msg.desc}
+        open= {open}
+        setOpen= {setOpen}
+        />
+      )}
     </form>
   );
 };
