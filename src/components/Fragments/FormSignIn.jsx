@@ -8,13 +8,15 @@ import CustomizedSnackbars from "../Elements/SnackBar";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
+import { NotifContext } from "../../context/notifContext";
+
 
 const FormSignIn = () => {
-  const [msg, setMsg] = useState("");
-  const [open, setOpen] = useState(true);
+  const {msg, open, setMsg, setOpen, setIsLoading} = useContext(NotifContext);
   const {setIsLoggedIn, setName} = useContext(AuthContext);
 
   const navigate = useNavigate();
+
   const { register, handleSubmit, formState: {errors, isValid}, } = useForm({
     mode: "onChange",
   });
@@ -23,6 +25,7 @@ const FormSignIn = () => {
   const onErrors = (errors) => console.error(errors);
 
   const onFormSubmit = async (data) =>{
+    setIsLoading(true);
     try{
       const response = await axios.post(
         "https://jwt-auth-eight-neon.vercel.app/login",
@@ -31,19 +34,22 @@ const FormSignIn = () => {
           password: data.password,
         }
       );
-      const decoded = jwtDecode(response.data.refreshToken);
-    
+
+      setIsLoading(false);
       setOpen(true);
       setMsg({severity: "success", desc: "Login Success"});
 
-      localStorage.setItem("refreshToken", response.data.refreshToken);
-
       setIsLoggedIn(true);
+      localStorage.setItem("refreshToken", response.data.refreshToken);
+      
+      const decoded = jwtDecode(response.data.refreshToken);
       setName(decoded.name);
 
 
       navigate("/");
     }catch(error){
+      setIsLoading(false);
+
       if(error.response){
         setOpen(true);
         setMsg({severity: "error", desc: error.response.data.msg});
