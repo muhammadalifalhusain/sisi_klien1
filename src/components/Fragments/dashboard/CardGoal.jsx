@@ -1,4 +1,3 @@
-import { goals } from "../../../data/goals";
 import { useState, useEffect } from "react";
 import Card from "../../Elements/Card";
 import CompositionExample from "../../Elements/GaugeChart";
@@ -8,9 +7,9 @@ import axios from "axios";
 const CardGoal = () => {
 
     const [goals, setGoals] = useState({presentAmount: 0, targetAmount: 0});
-    const chartValue = goals.presentAmount * 100 / goals.targetAmount;
+    const value = goals.presentAmount * 100 / goals.targetAmount;
 
-    const value = (goals.targetAmount * 100) / goals.presentAmount;
+
 
     const getData = async () => {
       try {
