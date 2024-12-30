@@ -100,10 +100,8 @@ const FormSignIn = () => {
       </div>
       <Button 
         variant={
-          !isValid
-          ? "bg-gray-05 w-full text-white"
-          : "bg-primary w-full text-white"
-        }
+          `${!isValid ? "bg-gray-05" : "bg-primary zoom-in"}
+            w-full text-white`}
         type="submit"
         disabled={!isValid ? "disabled" : ""}
         >
