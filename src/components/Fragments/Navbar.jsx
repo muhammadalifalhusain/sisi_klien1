@@ -4,8 +4,10 @@ import Logo from "../Elements/Logo";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { ThemeContext } from "../../context/themeContext";
+import { AuthContext } from "../../context/authContext";
+import axios from "axios";
 const Navbar = () => {
-  const navigate = useNavigate();
+  
   const themes = [
     { name: "theme-green", bgcolor: "bg-[#299D91]", color: "#299D91" },
     { name: "theme-blue", bgcolor: "bg-[#1E90FF]", color: "#1E90FF" },
@@ -15,7 +17,8 @@ const Navbar = () => {
   ];
   
   const { theme, setTheme } = useContext(ThemeContext);
-
+  const {setIsLoggedIn, setName, name} = useContext(AuthContext);
+  const navigate = useNavigate();
   const menus = [
     {
       id: "overview",
@@ -62,12 +65,31 @@ const Navbar = () => {
   ];
 
   const handleLogout = () => {
-    navigate("/main");
+    Logout();
    
   };
 
+  const refreshToken = localStorage.getItem("refreshToken");
+
+  const Logout = async () => {
+    try {
+      await axios.get("https://jwt-auth-eight-neon.vercel.app/logout", {
+        headers: {
+          Authorization: `Bearer ${refreshToken}`,
+        },
+      });
+      setIsLoggedIn(false);
+      setName("");
+      localStorage.removeItem("refreshToken");
+      navigate("/login");
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
-    <div className="bg-defaultBlack">
+    <div className={`bg-defaultBlack ${theme.name}`}>
       <nav className="sticky top-0 text-special-bg2 sm:w-72 w-28 min-h-screen px-7 py-12 flex flex-col justify-between">
         <div>
           <NavLink to="/" className="flex justify-center mb-10">
@@ -100,7 +122,7 @@ const Navbar = () => {
 </div>
         <div>
         <button
-            onClick={handleLogout}
+            onClick={Logout}
             className="flex bg-special-bg3 px-4 py-3 rounded-md hover:text-white w-full"
           >
             <div className="mx-auto sm:mx-0">
@@ -114,7 +136,7 @@ const Navbar = () => {
               <img src="images/profile.png" />
             </div>
             <div className="hidden sm:block">
-              <div className="text-white font-bold">AlHusain</div>
+              <div className="text-white font-bold">{name}</div>
               <div className="text-xs">View Profile</div>
             </div>
             <div className="hidden sm:block self-center">
