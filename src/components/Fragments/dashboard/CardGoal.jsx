@@ -5,53 +5,54 @@ import { Icon } from "../../Elements/Icon";
 import axios from "axios";
 
 const CardGoal = () => {
+  const [goals, setGoals] = useState({ presentAmount: 0, targetAmount: 0 });
 
-    const [goals, setGoals] = useState({presentAmount: 0, targetAmount: 0});
-    const value = goals.presentAmount * 100 / goals.targetAmount;
+  // Define chartValue based on presentAmount and targetAmount
+  const chartValue = goals.targetAmount
+    ? (goals.presentAmount * 100) / goals.targetAmount
+    : 0;
 
+  const getData = async () => {
+    try {
+      const refreshToken = localStorage.getItem("refreshToken");
 
+      const response = await axios.get(
+        "https://jwt-auth-eight-neon.vercel.app/goals",
+        {
+          headers: {
+            Authorization: `Bearer ${refreshToken}`,
+          },
+        }
+      );
 
-    const getData = async () => {
-      try {
-        const refreshToken = localStorage.getItem("refreshToken");
-  
-        const response = await axios.get(
-          "https://jwt-auth-eight-neon.vercel.app/goals",
-          {
-            headers: {
-              Authorization: `Bearer ${refreshToken}`,
-            },
-          }
-        );
-  
-        setGoals({
-          presentAmount: response.data.data[0].presentAmount,
-          targetAmount: response.data.data[0].targetAmount,
-        });
-      } catch (error) {
-        if (error.response) {
-          if (error.response.status == 401) {
-            setOpen(true);
-            setMsg({
-              severity: "error",
-              desc: "Session Has Expired. Please Login.",
-            });
-        
-            setIsLoggedIn(false);
-            setName("");
-        
-            localStorage.removeItem("refreshToken");
-            navigate("/login");
-          } else {
-            console.log(error.response);
-          }
+      setGoals({
+        presentAmount: response.data.data[0].presentAmount,
+        targetAmount: response.data.data[0].targetAmount,
+      });
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status == 401) {
+          setOpen(true);
+          setMsg({
+            severity: "error",
+            desc: "Session Has Expired. Please Login.",
+          });
+
+          setIsLoggedIn(false);
+          setName("");
+
+          localStorage.removeItem("refreshToken");
+          navigate("/login");
+        } else {
+          console.log(error.response);
         }
       }
-    }; 
+    }
+  };
 
-    useEffect(() => {
-      getData();
-    }, []);
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
     <Card
