@@ -5,16 +5,20 @@ import './index.css'
 import { ThemeContextProvider } from './context/themeContext.jsx'
 import { AuthContextProvider } from './context/authContext.jsx'
 import { NotifContextProvider } from './context/notifContext.jsx'
+import { ModeContextProvider } from './context/modeContext.jsx'
+
 
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <AuthContextProvider>
-      <NotifContextProvider>
+  <AuthContextProvider>
+    <NotifContextProvider>
+      <ModeContextProvider>
         <ThemeContextProvider>
           <App />
         </ThemeContextProvider>
-      </NotifContextProvider>
-    </AuthContextProvider>
-  </StrictMode>
+      </ModeContextProvider>
+    </NotifContextProvider>
+  </AuthContextProvider>
+</StrictMode>
 );

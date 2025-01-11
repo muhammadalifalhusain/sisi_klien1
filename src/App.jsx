@@ -1,4 +1,7 @@
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { useMode } from "./context/ModeContext";  // Import useMode dari ModeContext
+import { AuthContext } from "./context/authContext";
 import SignInPage from "./pages/signIn";
 import SignUpPage from "./pages/signUp";
 import ErrorRoute from "./pages/errorRoute";
@@ -8,17 +11,14 @@ import BalancePage from "./pages/balance";
 import GoalPage from "./pages/goal";
 import ExpensePage from "./pages/expense";
 import Main_Menu from "./pages/main_menu";
-import { useContext } from "react";
-import { AuthContext } from "./context/authContext";
-import { ChildCare } from "@mui/icons-material";
 
 const App = () => {
+  const { isLoggedIn } = useContext(AuthContext);
 
-
-  const {isLoggedIn} = useContext(AuthContext);
-  const RequireAuth = ({children}) => {
-    return isLoggedIn ? children : <Navigate to="/login"/>
+  const RequireAuth = ({ children }) => {
+    return isLoggedIn ? children : <Navigate to="/login" />;
   };
+
   const myRouter = createBrowserRouter([
     {
       path: "/",
@@ -43,15 +43,15 @@ const App = () => {
     },
     {
       path: "/balance",
-      element: <RequireAuth><BalancePage/></RequireAuth>,
+      element: <RequireAuth><BalancePage /></RequireAuth>,
     },
     {
       path: "/goal",
-      element: <RequireAuth><GoalPage/></RequireAuth>,
+      element: <RequireAuth><GoalPage /></RequireAuth>,
     },
     {
       path: "/expense",
-      element: <RequireAuth><ExpensePage/></RequireAuth>,
+      element: <RequireAuth><ExpensePage /></RequireAuth>,
     },
   ]);
 
