@@ -1,6 +1,5 @@
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import { useContext, useEffect } from "react";
-import { useMode } from "./context/ModeContext";  // Import useMode dari ModeContext
 import { AuthContext } from "./context/authContext";
 import SignInPage from "./pages/signIn";
 import SignUpPage from "./pages/signUp";
